@@ -2,11 +2,10 @@ version: '3.3'
 
 services:
   xmpp_server:
-    image: "prosody/prosody:latest"
+    image: "tigase/tigase-xmpp-server:latest"
     ports:
       - "5222:5222" #c2s port
-      - "5347:5347" #XMPP component port
-      - "8080:80" #http port
+      - "8080:8080" #http
     environment:
       - PASSWORD=xxxxxxxxxxxxxxxxxx
   
@@ -14,6 +13,7 @@ services:
     build: ./app
     entrypoint: ./entrypoint.sh
     environment:
-      - XMPP_SERVER='xmpp_server:5222'
+      - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=xxxxxxxxxxxxxxxxxx
-    
+    depends_on:
+    - xmpp_server
