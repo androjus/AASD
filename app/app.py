@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import spade
 
@@ -8,9 +7,10 @@ class DummyAgent(spade.agent.Agent):
 
 async def main():
     dummy = DummyAgent(
-        f'your_jid@{os.environ.get("XMPP_SERVER")}', os.environ.get("XMPP_PASSWORD")
+        f'test23@{os.environ.get("XMPP_SERVER")}',
+        os.environ.get("XMPP_PASSWORD")
     )
-    await dummy.start()
+    await dummy.start(auto_register=True)
 
 if __name__ == "__main__":
     spade.run(main())

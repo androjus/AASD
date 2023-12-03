@@ -2,18 +2,19 @@ version: '3.3'
 
 services:
   xmpp_server:
-    image: "tigase/tigase-xmpp-server:latest"
+    image: ejabberd/ecs
+    restart: unless-stopped
     ports:
-      - "5222:5222" #c2s port
-      - "8080:8080" #http
-    environment:
-      - PASSWORD=xxxxxxxxxxxxxxxxxx
-  
+      - 5222:5222
+      - 5280:5280
+    volumes:
+      - ./ejabberd.yml:/etc/ejabberd/ejabberd.yml
   app:
     build: ./app
     entrypoint: ./entrypoint.sh
+    restart: unless-stopped
     environment:
       - XMPP_SERVER=xmpp_server
-      - XMPP_PASSWORD=xxxxxxxxxxxxxxxxxx
+      - XMPP_PASSWORD=PASSWORD
     depends_on:
     - xmpp_server
