@@ -8,7 +8,7 @@ services:
       - 5222:5222
       - 5280:5280
     volumes:
-      - ./ejabberd.yml:/etc/ejabberd/ejabberd.yml
+      - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
   app:
     build: ./app
     entrypoint: ./entrypoint.sh
@@ -17,4 +17,4 @@ services:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
     depends_on:
-    - xmpp_server
+      - xmpp_server
