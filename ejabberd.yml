@@ -1,0 +1,18 @@
+hosts:
+  - localhost
+  - xmpp_server
+
+certfiles:
+  - /home/ejabberd/conf/server.pem
+
+listen:
+  -
+    port: 5222
+    ip: "::"
+    module: ejabberd_c2s
+    max_stanza_size: 262144
+    starttls_required: true
+
+modules:
+  mod_register: {}
+  mod_roster: {}
