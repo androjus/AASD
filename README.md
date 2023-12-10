@@ -10,21 +10,23 @@ Cały system można uruchomić za pomocą jedengo pliku docker-compose
 docker-compose up
 ```
 
-Możliwe też jest uruchomienie wszystkiego lokalnie, wtedy jedynie serwer XMPP musibyć uruchomiony za pomocą dockera:
+Możliwe też jest uruchomienie poszczególnych elementów niezależnie od siebie np na potrzeby developmentu, czy testów.
+
+Uruchomienie serwera XMPP:
 
 ```bash
-docker run -d \
+docker run --rm \
    -p 5222:5222 \
-   -p 5269:5269 \
-   -p localhost:5347:5347 \
-   -e PASSWORD=testowehaslo \
-   prosody/prosody:latest
+   -p 5280:5280 \
+   -v ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml \
+   ejabberd/ecs
 ```
 
-Poszczególne agenty znajdują się w folderze `app`
+Poszczególne agenty znajdują się w folderze `app`  
+Uruchomienie przykładowej apki
 
-```
+```bash
 cd app
 pip3 install -r ./requirements.txt
-XMPP_PASSWORD="testowehaslo" ./app.py
+XMPP_SERVER=localhost XMPP_PASSWORD="PASSWORD" ./app.py
 ```
