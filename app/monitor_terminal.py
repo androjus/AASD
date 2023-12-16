@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import json
 import os
 import time
 
@@ -8,7 +7,7 @@ from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
 
 class MonitorAgent(Agent):
-    '''periodacially sends query messages to all sensors'''
+    '''periodically sends query messages to all sensors'''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
