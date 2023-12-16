@@ -19,7 +19,8 @@ class MonitorAgent(Agent):
     class SendQuery(PeriodicBehaviour):
         async def run(self):
             print(f"Monitor agent with id: {self.agent.jid} querying sensors")
-            msg = spade.message.Message(to="sensor@localhost")
+            server_host = self.agent.jid.domain
+            msg = spade.message.Message(to=f"sensor@{server_host}")
             msg.set_metadata("performative", "query")
             await self.send(msg)
 
