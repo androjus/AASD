@@ -28,7 +28,7 @@ class MonitorAgent(Agent):
             responses = []
             responses_timeout = 2
             end_time = time.time() + responses_timeout
-            while True:
+            while time.time() < end_time:
                 response = await self.receive(timeout=end_time - time.time())
                 if response:
                     responses.append(response)
