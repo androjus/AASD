@@ -35,7 +35,7 @@ Uruchomienie serwera XMPP:
 docker run --rm \
    -p 5222:5222 \
    -p 5280:5280 \
-   -v ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml \
+   -v /"$(pwd)"/ejabberd.yml:/home/ejabberd/conf/ejabberd.yml \
    ejabberd/ecs
 ```
 
