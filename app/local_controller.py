@@ -21,10 +21,12 @@ class LocalControllerAgent(Agent):
 
     async def setup(self):
         print(f"Local controller agent with id: {self.jid} initialized")
-        b = self.SendQuery(period=self.period, target_temp=self.target_temp)
+        b = self.ManageEffectors(
+            period=self.period, target_temp=self.target_temp
+        )
         self.add_behaviour(b)
 
-    class SendQuery(PeriodicBehaviour):
+    class ManageEffectors(PeriodicBehaviour):
         """periodically sends query to sensors, processes results and notifies effectors"""
 
         def __init__(self, *args, target_temp: tuple[float, float], **kwargs):
