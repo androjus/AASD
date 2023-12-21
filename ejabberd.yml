@@ -16,3 +16,5 @@ listen:
 modules:
   mod_register: {}
   mod_roster: {}
+
+registration_timeout: infinite
