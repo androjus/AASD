@@ -7,6 +7,9 @@ import spade
 from spade.agent import Agent
 from spade.behaviour import PeriodicBehaviour
 
+STATE_ONE = "STATE_ONE"
+STATE_TWO = "STATE_TWO"
+
 
 class LocalControllerAgent(Agent):
     """queries information from sensor and notifies effector whenever the change of their state is needed"""
@@ -42,16 +45,8 @@ class LocalControllerAgent(Agent):
             msg.set_metadata("performative", "query")
             await self.send(msg)
 
-            # receive all responses
-            responses = []
-            responses_timeout = 2
-            end_time = time.time() + responses_timeout
-            while time.time() < end_time:
-                response = await self.receive(timeout=end_time - time.time())
-                if response:
-                    responses.append(response)
-                else:
-                    break
+            # receive all responses from sensors
+            responses = await self._get_responses(timeout=2)
 
             print(
                 f"Local controller agent with id: {self.agent.jid} received {len(responses)}"
@@ -74,21 +69,60 @@ class LocalControllerAgent(Agent):
             # validate current temperature and notify effectors is state change is needed
             if avg_temp_in is None or (
                 self.target_temp[0] <= avg_temp_in <= self.target_temp[1]
-            ):
-                print("Temperature within target")
-            elif avg_temp_in < self.target_temp[0]:
-                print("Temperature too low")
-                if avg_temp_out is not None and avg_temp_out > avg_temp_in:
-                    print("Window should be opened")
-                if avg_temp_out is not None and avg_temp_out < avg_temp_in:
-                    print("AC should be turned on")
-            elif avg_temp_in > self.target_temp[1]:
-                print("Temperature too high")
-                if avg_temp_out is not None and avg_temp_out > avg_temp_in:
-                    print("AC should be turned on")
-                if avg_temp_out is not None and avg_temp_out < avg_temp_in:
-                    print("Window should be opened")
-            # TODO: send requests to effectors if required
+            ):  # temperature within target, turn off AC, close windows
+                await self._send_request_to_effector(
+                    to=f"ac@{server_host}", state=STATE_ONE
+                )
+                await self._send_request_to_effector(
+                    to=f"window@{server_host}", state=STATE_ONE
+                )
+            elif avg_temp_in < self.target_temp[0]:  # temperature too low
+                if (
+                    avg_temp_out is not None and avg_temp_out > avg_temp_in
+                ):  # temperature outside is higher
+                    # turn off ac, open windows
+                    await self._send_request_to_effector(
+                        to=f"ac@{server_host}", state=STATE_ONE
+                    )
+                    await self._send_request_to_effector(
+                        to=f"window@{server_host}", state=STATE_TWO
+                    )
+                if (
+                    avg_temp_out is not None and avg_temp_out < avg_temp_in
+                ):  # temperature outside is lower
+                    # turn on ac, close windows
+                    await self._send_request_to_effector(
+                        to=f"ac@{server_host}", state=STATE_TWO
+                    )
+                    await self._send_request_to_effector(
+                        to=f"window@{server_host}", state=STATE_ONE
+                    )
+            elif avg_temp_in > self.target_temp[1]:  # temperature too high
+                if (
+                    avg_temp_out is not None and avg_temp_out > avg_temp_in
+                ):  # temperature outside is higher
+                    # turn on ac, close windows
+                    await self._send_request_to_effector(
+                        to=f"ac@{server_host}", state=STATE_TWO
+                    )
+                    await self._send_request_to_effector(
+                        to=f"window@{server_host}", state=STATE_ONE
+                    )
+                if (
+                    avg_temp_out is not None and avg_temp_out < avg_temp_in
+                ):  # temperature outside is lower
+                    # turn off ac, open windows
+                    await self._send_request_to_effector(
+                        to=f"ac@{server_host}", state=STATE_ONE
+                    )
+                    await self._send_request_to_effector(
+                        to=f"window@{server_host}", state=STATE_TWO
+                    )
+            else:
+                return
+
+            # receive responses from effectors
+            await self._get_responses(timeout=2)
 
         def _process_responses(
             self, responses: list
@@ -126,6 +160,23 @@ class LocalControllerAgent(Agent):
             )
 
             return avg_temp_out, avg_temp_in
+
+        async def _send_request_to_effector(self, to: str, state: str) -> None:
+            req = spade.message.Message(to=to)
+            req.set_metadata("performative", "request")
+            req.body = state
+            await self.send(req)
+
+        async def _get_responses(self, timeout: int = 10) -> list:
+            responses = []
+            end_time = time.time() + timeout
+            while time.time() < end_time:
+                response = await self.receive(timeout=end_time - time.time())
+                if response:
+                    responses.append(response)
+                else:
+                    break
+            return responses
 
 
 async def main():
