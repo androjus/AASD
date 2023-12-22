@@ -9,9 +9,18 @@ services:
       - 5280:5280
     volumes:
       - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
-  app:
-    build: ./app
-    entrypoint: ./entrypoint.sh
+
+  effector:
+    build: ./app/agents/effector
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+    depends_on:
+      - xmpp_server
+
+  monitor:
+    build: ./app/agents/monitor
     restart: unless-stopped
     environment:
       - XMPP_SERVER=xmpp_server
