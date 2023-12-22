@@ -40,7 +40,7 @@ class MonitorAgent(Agent):
 
 async def main():
     monitor = MonitorAgent(
-        f'monitor@{os.environ.get("XMPP_SERVER")}',
+        f'{os.environ.get("XMPP_MONITOR_NAME")}@{os.environ.get("XMPP_SERVER")}',
         os.environ.get("XMPP_PASSWORD"),
     )
     await monitor.start(auto_register=True)

@@ -83,7 +83,7 @@ class EffectorAgent(Agent):
 
 async def main():
     effector = EffectorAgent(
-        f'effector@{os.environ.get("XMPP_SERVER")}',
+        f'{os.environ.get("XMPP_EFFECTOR_NAME")}@{os.environ.get("XMPP_SERVER")}',
         os.environ.get("XMPP_PASSWORD"),
     )
     await effector.start(auto_register=True)

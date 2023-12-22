@@ -181,7 +181,7 @@ class LocalControllerAgent(Agent):
 
 async def main():
     controller = LocalControllerAgent(
-        f'controller@{os.environ.get("XMPP_SERVER")}',
+        f'{os.environ.get("XMPP_CONTROLER_NAME")}@{os.environ.get("XMPP_SERVER")}',
         os.environ.get("XMPP_PASSWORD"),
         target_temp=(20.0, 22.0),
         period=10,

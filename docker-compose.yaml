@@ -8,6 +8,7 @@ services:
       - 5222:5222
       - 5280:5280
     volumes:
+      - ./database:/home/ejabberd/database
       - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
 
   effector:
@@ -16,6 +17,7 @@ services:
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
+      - XMPP_EFFECTOR_NAME=effector
     depends_on:
       - xmpp_server
 
@@ -25,6 +27,7 @@ services:
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
+      - XMPP_MONITOR_NAME=monitor
     depends_on:
       - xmpp_server
 
@@ -34,6 +37,7 @@ services:
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
+      - XMPP_SENSOR_NAME=sensor
     depends_on:
       - xmpp_server
 
@@ -43,5 +47,6 @@ services:
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
+      - XMPP_CONTROLER_NAME=controler
     depends_on:
       - xmpp_server
