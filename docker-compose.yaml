@@ -11,13 +11,23 @@ services:
       - ./database:/home/ejabberd/database
       - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
 
-  effector:
+  effector_window:
     build: ./app/agents/effector
     restart: unless-stopped
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
-      - XMPP_EFFECTOR_NAME=effector
+      - XMPP_EFFECTOR_NAME=window
+    depends_on:
+      - xmpp_server
+
+  effector_ac:
+    build: ./app/agents/effector
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+      - XMPP_EFFECTOR_NAME=ac
     depends_on:
       - xmpp_server
 
