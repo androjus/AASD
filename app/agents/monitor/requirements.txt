@@ -1,1 +1,2 @@
 spade==3.3.2
+smbus==1.1.post2

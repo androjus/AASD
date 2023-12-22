@@ -40,6 +40,9 @@ services:
       - XMPP_MONITOR_NAME=monitor
     depends_on:
       - xmpp_server
+#only for raspberry pi
+    devices:  
+      - "/dev/i2c-1:/dev/i2c-1"  
 
   sensor:
     build: ./app/agents/sensor
