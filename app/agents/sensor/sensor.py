@@ -44,7 +44,7 @@ class SensorAgent(Agent):
 
 async def main():
     sensor = SensorAgent(
-        f'sensor@{os.environ.get("XMPP_SERVER")}',
+        f'{os.environ.get("XMPP_SENSOR_NAME")}@{os.environ.get("XMPP_SERVER")}',
         os.environ.get("XMPP_PASSWORD"),
         outside=True
     )

@@ -8,13 +8,58 @@ services:
       - 5222:5222
       - 5280:5280
     volumes:
+      - ./database:/home/ejabberd/database
       - ./ejabberd.yml:/home/ejabberd/conf/ejabberd.yml
-  app:
-    build: ./app
-    entrypoint: ./entrypoint.sh
+
+  effector_window:
+    build: ./app/agents/effector
     restart: unless-stopped
     environment:
       - XMPP_SERVER=xmpp_server
       - XMPP_PASSWORD=PASSWORD
+      - XMPP_EFFECTOR_NAME=window
+    depends_on:
+      - xmpp_server
+
+  effector_ac:
+    build: ./app/agents/effector
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+      - XMPP_EFFECTOR_NAME=ac
+    depends_on:
+      - xmpp_server
+
+  monitor:
+    build: ./app/agents/monitor
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+      - XMPP_MONITOR_NAME=monitor
+    depends_on:
+      - xmpp_server
+#only for raspberry pi
+    devices:  
+      - "/dev/i2c-1:/dev/i2c-1"  
+
+  sensor:
+    build: ./app/agents/sensor
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+      - XMPP_SENSOR_NAME=sensor
+    depends_on:
+      - xmpp_server
+
+  controller:
+    build: ./app/agents/controller
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+      - XMPP_CONTROLER_NAME=controler
     depends_on:
       - xmpp_server
