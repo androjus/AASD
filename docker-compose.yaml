@@ -27,3 +27,21 @@ services:
       - XMPP_PASSWORD=PASSWORD
     depends_on:
       - xmpp_server
+
+  sensor:
+    build: ./app/agents/sensor
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+    depends_on:
+      - xmpp_server
+
+  controller:
+    build: ./app/agents/controller
+    restart: unless-stopped
+    environment:
+      - XMPP_SERVER=xmpp_server
+      - XMPP_PASSWORD=PASSWORD
+    depends_on:
+      - xmpp_server
