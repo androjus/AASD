@@ -13,10 +13,6 @@ class SensorAgent(Agent):
         self.outside = outside
         #TODO other parameters like rain, wind, etc.
 
-        #Mock tempature generating
-        self._last_tempature = 10
-        self._temp_growing = True
-
     async def setup(self):
         print(f"Sensor agent with id: {self.jid} initialized")
         b = self.MeasureValue(outside=self.outside)
@@ -30,7 +26,10 @@ class SensorAgent(Agent):
         def __init__(self, outside: bool, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.outside = outside
-
+            
+            #Mock tempature generating
+            self._last_tempature = 10
+            self._temp_growing = True
         async def run(self):
             msg = await self.receive()
             if msg:
