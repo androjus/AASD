@@ -13,6 +13,10 @@ class SensorAgent(Agent):
         self.outside = outside
         #TODO other parameters like rain, wind, etc.
 
+        #Mock tempature generating
+        self._last_tempature = 10
+        self._temp_growing = True
+
     async def setup(self):
         print(f"Sensor agent with id: {self.jid} initialized")
         b = self.MeasureValue(outside=self.outside)
@@ -39,8 +43,23 @@ class SensorAgent(Agent):
         
         def _get_readings(self) -> str:
             results = {}
-            results["temperature"] = 5
+            results["temperature"] = self._generate_tempature()
             return json.dumps(results)
+        
+        def _generate_tempature(self) -> int:
+            MIN_TEMP = 5
+            MAX_TEMP = 30
+            if self._temp_growing:
+                self._last_tempature += 1
+                if self._last_tempature >= MAX_TEMP:
+                    self._temp_growing = False
+            else:
+                self._last_tempature -= 1
+                if self._last_tempature <= MIN_TEMP:
+                    self._temp_growing = True
+            return self._last_tempature
+
+            
 
 async def main():
     sensor = SensorAgent(
